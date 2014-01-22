@@ -1,0 +1,5 @@
+this file is to give methods input from files.
+this file is not important.
+hello
+how are you
+i am fine

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ===========================================================================================
+     B.Sc. Software Development – Advanced Object-Oriented Design Principles & Patterns (2013)  
+     
+     An Encoder for Java
+     =========================================================================================== -->
+<project name="Encoder" default="archive">
+    <description>
+    	Compile the source code, generate JavaDocs and package the application in a JAR Archive.
+    </description>
+	
+	<!-- Declare global properties (name/value pairs) for this build -->
+	<property name="srcDir" value="src"/>
+	<property name="distDir" value="/encoder"/>
+	<property name="buildDir" value="${distDir}/build" />
+	<property name="docDir" value="${distDir}/docs" />
+
+	<path id="external.classespath">
+        <pathelement location="bin"/>
+        <pathelement location="libs/jsoup-1.7.3.jar"/>
+		<pathelement location="libs/junit.jar"/>
+	</path>
+			
+	
+	<!-- Delete any previously created directories and files -->
+    <target name="clean">
+    	<delete dir="${buildDir}"/>
+        <delete dir="${distDir}"/>        
+    	<delete dir="${deployDir}"/>  
+    </target>
+	
+	<!-- Initialisation task -->
+    <target name="init" depends="clean">
+		<tstamp/>
+    	<mkdir dir="${buildDir}"/>
+        <mkdir dir="${distDir}"/>        
+    	<mkdir dir="${deployDir}"/> 
+    	<mkdir dir="${reportDir}"/> 
+    </target>	
+
+	<!-- Compile source code -->
+	<target name="compile" depends="init">
+		<javac srcdir="${srcDir}" destdir="${buildDir}" includeantruntime="false"  excludes="**/Runner*/**,**/JUnitTests*/**">
+			<classpath refid="external.classespath"/>
+		</javac>
+	</target>
+	
+	<!-- Generate JavaDocs ie/gmit/Encoder -->
+    <target name="doc" depends="compile">
+    	<javadoc sourcepath="${srcDir}" destdir="${docDir}" access="package" author="true" classpath="libs\jsoup-1.7.3.jar" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="ie.gmit.Encoder,ie.gmit.Encoder.Base64,ie.gmit.Encoder.Huffman,ie.gmit.Encoder.CustomExceptions,ie.gmit.Encoder.Runlength" source="1.7" splitindex="true" use="true" version="true" windowtitle="An Encoder API for Java" excludepackagenames="ie.gmit.Encoder.Runner,ie.gmit.Encoder.JUnitTests" >
+            <doctitle><![CDATA[<h1>An Encoder API for Java by Adeel Gilani</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; 2013 - Adeel Gilani</i>]]></bottom>
+        </javadoc>
+    </target>
+	
+	
+	<!-- Create Java application archive (Jar) -->
+	<target name="archive" depends="doc">
+        <jar destfile="${distDir}/encoder.jar" basedir="${buildDir}" excludes="**/Runner*/**,**/JUnitTests*/**">
+			<zipgroupfileset dir="libs" includes="jsoup-1.7.3.jar" />
+			<manifest>
+				<attribute name="DependencyFinder" value="main"/>
+				<attribute name="Main-Class" value="ie.gmit.Encoder"/>
+			</manifest>
+        </jar>
+    </target>
+	
+</project>
